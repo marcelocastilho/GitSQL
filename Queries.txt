@@ -1,0 +1,60 @@
+SQL queries
+
+Getting all
+
+	select *
+		from cliente cli,
+			tipoCliente tcli,
+			ordem ord1,
+			ordemitem ori,
+			item it
+		where 
+			cli.tipoClienteId = tcli.id
+			and ord1.clienteid = cli.id
+			and ori.ordemId = ord1.id
+			and ori.itemid = it.id
+
+order by/group by/having/max/min/rownum,sum,between
+select  cli.nome, min(ord1.valorTotal), max(ord1.valorTotal), count(*), sum(ord1.valorTotal)
+	from cliente cli,		
+		ordem ord1,
+		ordemitem ori
+	where 
+		ord1.clienteid = cli.id
+		and ori.ordemId = ord1.id
+		and ord1.dataOrdem between date('now', '-10 month') and datetime('now','-2 minute')
+	group by cli.nome
+	HAVING sum(ord1.valorTotal) > 400
+	order by sum(ord1.valorTotal) desc
+	--limit 1
+
+Interval
+	SELECT date('now','start of month','+12 month');
+	SELECT date('now','start of month','+1 month','-1 day');
+
+Subquery
+
+Realtionship when not exists the son
+
+select  cli.nome
+	from cliente cli
+	where 
+		cli.id	not in (select clienteId from ordem)
+	group by cli.nome
+	
+
+#Buscar cliente que compraram mais produtos 
+select  cli.nome, count(*)
+	from cliente cli,		
+		ordem ord1,
+		ordemitem ori
+	where 
+		ord1.clienteid = cli.id
+		and ori.ordemId = ord1.id		
+	group by cli.nome	
+	order by sum(ori.itemid) desc
+	limit 1	
+
+#Buscar cliente que mais comprou cada produto
+
+#Buscar cliente que menos gastou

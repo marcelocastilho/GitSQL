@@ -1,0 +1,102 @@
+###############
+Scripts database create
+
+create table tipoCliente(
+	id integer primary key AUTOINCREMENT, 
+	descricao varchar(200)
+)
+
+insert into tipoCliente ( descricao) values('Produto1');
+insert into tipoCliente ( descricao) values('Produto2');
+insert into tipoCliente ( descricao) values('Produto3');
+insert into tipoCliente ( descricao) values('Produto4');
+insert into tipoCliente ( descricao) values('Produto5');
+insert into tipoCliente ( descricao) values('Produto6');
+insert into tipoCliente ( descricao) values('Produto7');
+
+create table cliente(
+	id integer primary key AUTOINCREMENT, 
+	nome varchar(200),
+	idade integer,
+	dataCadastro datetime,
+	email varchar(100),
+	peso real,
+	altura real,
+	ativo boolean,
+	tipoClienteId integer,
+	CONSTRAINT fkTipoClienteId
+		FOREIGN KEY (tipoClienteId)
+		REFERENCES tipoCliente (id)
+)
+
+insert into cliente (nome, idade, dataCadastro, email, peso, altura, ativo, tipoClienteId) values('Marcelo',34,datetime('now'), 'marcelocasnet@gmail.com', 73, 1.68, 0, 1);
+insert into cliente (nome, idade, dataCadastro, email, peso, altura, ativo, tipoClienteId) values('João',34,datetime('now', '-1 month'), 'joao@gmail.com', 75, 1.66, 0, 1);
+insert into cliente (nome, idade, dataCadastro, email, peso, altura, ativo, tipoClienteId) values('Pedro',26,datetime('now', '-6 month'), 'pedro@gmail.com', 85, 1.82, 0, 2);
+insert into cliente (nome, idade, dataCadastro, email, peso, altura, ativo, tipoClienteId) values('Paulo',21,datetime('now', '-13 month'), 'paulo@gmail.com', 70, 1.72, 0, 2);
+insert into cliente (nome, idade, dataCadastro, email, peso, altura, ativo, tipoClienteId) values('Cliente Sem ordem',85,datetime('now', '-13 year'), 'mumcacomprei@gmail.com', 90, 1.95, 1, 1);
+
+create table item(
+	id integer primary key AUTOINCREMENT, 
+	descricao varchar(200),
+	grupo varchar(20),	
+	valorVenda real,
+	valorCompraMedia real
+)
+
+insert into item (descricao, grupo, valorVenda, valorCompraMedia) values ('item1', 'eletrodomesticos', 20, 15.5);
+insert into item (descricao, grupo, valorVenda, valorCompraMedia) values ('item2', 'eletrodomesticos', 50, 35.5);
+insert into item (descricao, grupo, valorVenda, valorCompraMedia) values ('item3', 'moveis', 21, 17);
+insert into item (descricao, grupo, valorVenda, valorCompraMedia) values ('item4', 'moveis', 120, 85.3);
+
+create table ordem(
+	id integer primary key AUTOINCREMENT, 
+	clienteId integer,
+	dataOrdem datetime,
+	valorTotal real,
+	vendedor varchar(200),
+	tipoPagamento varchar(30),
+	CONSTRAINT fkClienteId
+		FOREIGN KEY (clienteId)
+		REFERENCES cliente (id)	
+);
+
+insert into ordem (clienteId, dataOrdem, valorTotal, vendedor, tipoPagamento) values (1, datetime('now', '-1 hour'),350.98, 'vendedor1', 'cartao');
+insert into ordem (clienteId, dataOrdem, valorTotal, vendedor, tipoPagamento) values (1, datetime('now', '-1 hour'),125.54, 'vendedor2', 'dinheiro');
+insert into ordem (clienteId, dataOrdem, valorTotal, vendedor, tipoPagamento) values (2, datetime('now', '-1 hour'),157.58, 'vendedor1', 'cartao');
+insert into ordem (clienteId, dataOrdem, valorTotal, vendedor, tipoPagamento) values (3, datetime('now', '-1 hour'),1148.21, 'vendedor2', 'cartao');
+insert into ordem (clienteId, dataOrdem, valorTotal, vendedor, tipoPagamento) values (4, datetime('now', '-1 hour'),15222.22, 'vendedor1', 'cartao');
+
+create table ordemitem(
+	id integer primary key AUTOINCREMENT, 
+	ordemId integer,
+	itemId integer,
+	quantidade integer,
+	CONSTRAINT fkordemId
+		FOREIGN KEY (ordemId)
+		REFERENCES ordem (id),
+	CONSTRAINT fkitemId
+		FOREIGN KEY (itemId)
+		REFERENCES item (id)
+);
+
+insert into ordemitem (ordemId, itemid, quantidade) values (1,1,2);
+insert into ordemitem (ordemId, itemid, quantidade) values (1,2,1);
+insert into ordemitem (ordemId, itemid, quantidade) values (1,3,1);
+
+insert into ordemitem (ordemId, itemid, quantidade) values (2,2,3);
+insert into ordemitem (ordemId, itemid, quantidade) values (2,4,1);
+insert into ordemitem (ordemId, itemid, quantidade) values (2,3,1);
+
+insert into ordemitem (ordemId, itemid, quantidade) values (3,2,3);
+insert into ordemitem (ordemId, itemid, quantidade) values (3,1,1);
+insert into ordemitem (ordemId, itemid, quantidade) values (3,4,1);
+
+insert into ordemitem (ordemId, itemid, quantidade) values (4,4,3);
+insert into ordemitem (ordemId, itemid, quantidade) values (4,2,1);
+insert into ordemitem (ordemId, itemid, quantidade) values (4,1,4);
+
+insert into ordemitem (ordemId, itemid, quantidade) values (5,1,3);
+insert into ordemitem (ordemId, itemid, quantidade) values (5,3,3);
+insert into ordemitem (ordemId, itemid, quantidade) values (5,4,1);
+
+
