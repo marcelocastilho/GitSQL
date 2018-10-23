@@ -34,7 +34,7 @@ Interval
 
 Subquery
 
-Realtionship when not exists the son
+Relationship when not exists the son
 
 select  cli.nome
 	from cliente cli
@@ -43,18 +43,72 @@ select  cli.nome
 	group by cli.nome
 	
 
-#Buscar cliente que compraram mais produtos 
-select  cli.nome, count(*)
+--Buscar clientes que compraram mais produtos 
+select  cli.nome
+		,ord1.id		
+		,count(ori.itemid)
 	from cliente cli,		
 		ordem ord1,
 		ordemitem ori
 	where 
 		ord1.clienteid = cli.id
 		and ori.ordemId = ord1.id		
+	group by cli.nome
+	order by count(ori.itemid) desc
+	--limit 1	
+	
+--Buscar cliente com que mais gastou
+select  cli.nome, count(*), sum(ord1.valorTotal)
+	from cliente cli,		
+		ordem ord1		
+	where 
+		ord1.clienteid = cli.id				
 	group by cli.nome	
-	order by sum(ori.itemid) desc
-	limit 1	
+	order by sum(ord1.valorTotal) desc
+	limit 1
 
-#Buscar cliente que mais comprou cada produto
+--Buscar cliente com mais ordens no ultimo ano
+select  cli.nome, count(*), sum(ord1.valorTotal)
+	from cliente cli,		
+		ordem ord1		
+	where 
+		ord1.clienteid = cli.id		
+		and ord1.dataOrdem between date('now', '-12 month') and datetime('now')
+	group by cli.nome	
+	order by count(*) desc
+	limit 1
+	
+--Buscar clientes que compraram mais produtos especificos
+select  cli.id			
+		,ori.itemid "id do item"
+		,sum(ori.quantidade)
+	from cliente cli,		
+		ordem ord1,
+		ordemitem ori
+	where 
+		ord1.clienteid = cli.id
+		and ori.ordemId = ord1.id
+	group by cli.nome, ori.itemid
+	order by sum(ori.quantidade) desc
 
-#Buscar cliente que menos gastou
+--Buscar cliente que menos gastou
+select  cli.nome, count(*), sum(ord1.valorTotal)
+	from cliente cli,		
+		ordem ord1		
+	where 
+		ord1.clienteid = cli.id				
+	group by cli.nome	
+	order by sum(ord1.valorTotal)
+	limit 1
+	
+--Buscar produtos mais vendidos
+select  ori.itemid "id do item"
+		,sum(ori.quantidade	)
+	from 
+		ordem ord1,
+		ordemitem ori
+	where 		
+		ori.ordemId = ord1.id	
+	group by ori.itemid
+	order by sum(ori.quantidade	) desc
+	limit 3
